@@ -15,12 +15,12 @@ import time
 
 auth = get_auth_file.get_auth()     #get authentication from our imported module
 
-start_date = datetime(2020, 3, 1, 0, 0, 0)
+start_date = datetime(2019, 3, 1, 0, 0, 0)
 end_date = datetime(2020, 3, 15, 0, 0, 0)
 tweets = []
-name = "SafaricomPLC" #SirHigiChege"
-tweet_count = 20
-pages = 1
+name = "DavidNdii"  #SirHigiChege"
+tweet_count = 200
+pages = 2
 
 def get_tweets(name,auth,start_date,end_date,limit=20,pages=1):
     # results = auth.user_timeline(id=name, count=limit)
@@ -36,7 +36,7 @@ def get_tweets(name,auth,start_date,end_date,limit=20,pages=1):
                 created_at = datetime.strptime(tweet.get("created_at"), "%a %b %y %H:%M:%S +0000 %Y")
 
                 if created_at > start_date and created_at < end_date:
-                    data = [created_at, text]
+                    data = [page_count, created_at, text]
                     tweets.append(data)
 
             print(f"got {len(tweets)} tweets from page : {page_count}")
@@ -59,7 +59,7 @@ tweets = get_tweets(name,auth, start_date, end_date, limit=tweet_count, pages=pa
 for tweet in tweets:
     if len(tweet) > 0 :
         print("saving data ...")
-        save_data.to_csv(tweet, "./data/csv_tweets.csv", "a")
+        save_data.to_csv(tweet, "./data/csv_tweets.csv", "w")
     else:
         print("no data got back from the request")
 

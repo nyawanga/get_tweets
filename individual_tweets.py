@@ -26,7 +26,12 @@ def get_tweets(name,auth,start_date,end_date,limit=20,pages=1):
     # results = auth.user_timeline(id=name, count=limit)
     page_count = 0
     try:
-        for page in tweepy.Cursor(auth.user_timeline, id=name, count=limit).pages(pages):
+        if pages == None:
+            cursor_object = tweepy.Cursor(auth.user_timeline, id=name, count=limit).pages()
+        else:
+            cursor_object = tweepy.Cursor(auth.user_timeline, id=name, count=limit).pages(pages)
+
+        for page in cursor_object:
             page_count += 1
             print(f"working on page: {page_count}")
             tweets = []
@@ -53,13 +58,13 @@ def get_tweets(name,auth,start_date,end_date,limit=20,pages=1):
 
 
 # instantiate the generator
-tweets = get_tweets(name,auth, start_date, end_date, limit=tweet_count, pages=pages)
+tweets = get_tweets(name,auth, start_date, end_date, limit=tweet_count, pages=None)
 
 
 for tweet in tweets:
     if len(tweet) > 0 :
         print("saving data ...")
-        save_data.to_csv(tweet, "./data/csv_tweets.csv", "w")
+        save_data.to_csv(tweet, "./data/csv_tweets.csv", "a")
     else:
         print("no data got back from the request")
 

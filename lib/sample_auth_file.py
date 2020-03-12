@@ -11,7 +11,7 @@ def get_auth():
 
     #AUTHENTICATE
     try:
-        tweepyapi= tweepy.API(auth)
+        tweepyapi= tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     except Exception as err:
         raise
     return tweepyapi

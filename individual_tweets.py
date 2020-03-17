@@ -29,9 +29,9 @@ def get_tweets(name,auth,start_date,end_date,limit=20,pages=1):
     page_count = 0
     try:
         if pages == None:
-            cursor_object = tweepy.Cursor(auth.user_timeline, id=name, count=limit).pages()
+            cursor_object = tweepy.Cursor(auth.user_timeline, id=name, count=limit, tweet_mode='extended').pages()
         else:
-            cursor_object = tweepy.Cursor(auth.user_timeline, id=name, count=limit).pages(pages)
+            cursor_object = tweepy.Cursor(auth.user_timeline, id=name, count=limit, tweet_mode='extended').pages(pages)
 
         for page in cursor_object:
             page_count += 1
@@ -58,10 +58,8 @@ def get_tweets(name,auth,start_date,end_date,limit=20,pages=1):
     finally:
         print("exiting program")
 
-
 # instantiate the generator
 tweets = get_tweets(name,auth, start_date, end_date, limit=tweet_count, pages=None)
-
 
 for tweet in tweets:
     if len(tweet) > 0 :
@@ -69,41 +67,3 @@ for tweet in tweets:
         save_data.to_csv(tweet, "./data/csv_tweets.csv", "a")
     else:
         print("no data got back from the request")
-
-
-            page_count += 1
-            print(f"working on page: {page_count}")
-            tweets = []
-            for result in page:
-                tweet = result._json
-                text = tweet.get("text")
-                created_at = datetime.strptime(tweet.get("created_at"), "%a %b %y %H:%M:%S +0000 %Y")
-
-                if created_at > start_date and created_at < end_date:
-                    data = [page_count, created_at, text]
-                    tweets.append(data)
-
-            print(f"got {len(tweets)} tweets from page : {page_count}")
-            yield tweets
-
-            # control throttling
-            print("sleeping for 10 seconds...")
-            time.sleep(10)
-            # print(created_at, tweet.get("text"))
-    except Exception as err:
-        print(f"got an error")
-    finally:
-        print("exiting program")
-
-
-# instantiate the generator
-tweets = get_tweets(name,auth, start_date, end_date, limit=tweet_count, pages=None)
-
-
-for tweet in tweets:
-    if len(tweet) > 0 :
-        print("saving data ...")
-        save_data.to_csv(tweet, "./data/csv_tweets.csv", "a")
-    else:
-        print("no data got back from the request")
-
